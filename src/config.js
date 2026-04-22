@@ -8,10 +8,12 @@ dotenv.config({
 });
 
 module.exports = {
-  AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
-  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
-  AWS_REGION: process.env.AWS_REGION,
-  AWS_API_VERSION: process.env.AWS_API_VERSION,
+  MAIL_HOST: process.env.MAIL_HOST,
+  MAIL_PORT: process.env.MAIL_PORT,
+  MAIL_SECURE: process.env.MAIL_SECURE === 'true',
+  MAIL_USER: process.env.MAIL_USER,
+  MAIL_PASS: process.env.MAIL_PASS,
+  MAIL_FROM: process.env.MAIL_FROM,
   REDIS_HOST: process.env.REDIS_HOST,
   REDIS_PORT: process.env.REDIS_PORT,
 };
