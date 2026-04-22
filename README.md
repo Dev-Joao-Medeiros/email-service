@@ -1,87 +1,121 @@
-# Email Service 
+# Email Service Backend
 
-<p align="justify">
+Este projeto foi desenvolvido para fins didáticos com base na live da Fernanda Kipper:
+[Live Coding: Criando aplicação Node.js do zero](https://www.youtube.com/watch?v=GVF--Rl3bP4&t=4314s).
 
-Este projeto foi desenvolvido para fins didáticos, baseado na live da Fernanda Kipper: [Live Coding: Criando aplicação NODE JS do ZERO](https://www.youtube.com/watch?v=GVF--Rl3bP4&t=4314s).
-
-O projeto original foi criado por [Fernanda Kipper](https://github.com/Fernanda-Kipper) e [Guilherme Vahl](https://github.com/guivahl) como parte da disciplina de Banco de Dados Avançado (UFPel). O objetivo é demonstrar o uso do **Redis** como *Message Broker* para gerenciar disparos de e-mails em lote de forma eficiente.
-</p>
+O projeto original foi criado por [Fernanda Kipper](https://github.com/Fernanda-Kipper) e [Guilherme Vahl](https://github.com/guivahl).
+Nesta versão, o envio de e-mails foi adaptado para usar SMTP com Nodemailer.
 
 ## Projeto original
-[Serviço de Disparo de Emails](https://github.com/Fernanda-Kipper/email-service-backend.git)
 
-## 🔄 Alterações nesta versão
-<p align="justify">
-Diferente da aplicação original que utilizava o AWS SDK (SES), esta versão utiliza o <strong>Nodemailer</strong>. Essa mudança foi feita para permitir o uso de ferramentas de SMTP gratuitas, facilitando o teste e o aprendizado sem custos.
+- [Serviço de Disparo de Emails](https://github.com/Fernanda-Kipper/email-service-backend.git)
 
-Este projeto é um clone do repositório redis-dba, com algumas adições de funcionalidades.
-</p>
+## O que mudou nesta versão
 
-## Tecnologias utilizadas
+- Substituição do AWS SES por [Nodemailer](https://nodemailer.com/)
+- Uso de SMTP (ex.: Mailtrap, Brevo) para facilitar testes
+- Fluxo assíncrono com fila usando [Bull](https://github.com/OptimalBits/bull) + [Redis](https://redis.io/)
 
+## Tecnologias
+
+- [Node.js](https://nodejs.org/)
+- [Fastify](https://fastify.dev/)
+- [Bull](https://github.com/OptimalBits/bull)
 - [Redis](https://redis.io/)
-- [NodeJs](https://nodejs.org/)
-    - [Bull](https://github.com/OptimalBits/bull)
-    - [Nodemailer](https://nodemailer.com/)
+- [Nodemailer](https://nodemailer.com/)
 
-## Front-end da Aplicação
+## Front-end recomendado
 
 - [membership-frontend](https://github.com/Fernanda-Kipper/membership-frontend)
 
-## Como execultar o front-end
+### Como executar o front-end
 
-1. Clone o repositório
+1. Clone o repositório:
 
-    ```
-    git clone https://github.com/Fernanda-Kipper/membership-frontend
-    ```
+```bash
+git clone https://github.com/Fernanda-Kipper/membership-frontend
+cd membership-frontend
+```
 
-2. Navegue até a pasta do projeto
+2. Instale as dependências:
 
-    ```
-    cd membership-frontend
-    ```
+```bash
+npm install
+```
 
-3. Instale as dependencias
+3. Inicie o projeto:
 
-    ```
-    npm install
-    ```
+```bash
+npm run dev
+```
 
-4. Rode o projeto com o comando 
+## Como executar o backend
 
-    ```
-    npm run dev
-    ```
+### Pré-requisitos
 
-## Como executar
+- Node.js 18+
+- Redis em execução (padrão: 127.0.0.1:6379)
 
-1. Clone o repositório
+### Passo a passo
 
-    ```
-    https://github.com/Dev-Joao-Medeiros/email-service.git
-    ```
+1. Clone este repositório:
 
-2. Entre na pasta
+```bash
+git clone https://github.com/Dev-Joao-Medeiros/email-service-backend.git
+cd email-service-backend
+```
 
-   ```
-    cd nome-do-repositorio
-   ```
+2. Instale as dependências:
 
-3. Instale os pacotes utilizando o comando
+```bash
+npm install
+```
 
-   ```
-   npm install
-   ```
+3. Crie o arquivo .env na raiz, usando .env.example como base:
 
-4. Crie um arquivo `.env` na raiz do projeto e insira suas credenciais de SMTP. Utilize o arquivo `.env.example` como base.
+```env
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_SECURE=false
+MAIL_USER=your_mailtrap_user
+MAIL_PASS=your_mailtrap_password_or_token
+MAIL_FROM=no-reply@example.com
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+```
 
-5. Rode o projeto com o comando
+4. Inicie o backend:
 
-   ```
-   npm start
-   ```
+```bash
+npm start
+```
 
-### Exemplo de SMTP gratuito
+Servidor padrão: http://localhost:3200
 
-Você pode usar um provedor com plano gratuito, como Mailtrap ou Brevo, informando no `.env` os dados do servidor SMTP fornecido por eles.
+## Endpoint
+
+### POST /send
+
+Enfileira o envio de e-mail de confirmação de assinatura.
+
+Exemplo de requisição:
+
+```bash
+curl -X POST http://localhost:3200/send \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "cliente@exemplo.com",
+    "firstName": "Joao",
+    "lastName": "Silva"
+  }'
+```
+
+Resposta esperada:
+
+- 200 quando o job é adicionado na fila com sucesso
+- 500 em caso de erro interno
+
+## Observações
+
+- O backend usa CORS para origem localhost:5173 (frontend em desenvolvimento).
+- O envio de e-mail é processado de forma assíncrona pela fila.
