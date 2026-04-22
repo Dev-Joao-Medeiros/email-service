@@ -59,7 +59,7 @@ Este projeto é um clone do repositório redis-dba, com algumas adições de fun
 1. Clone o repositório
 
     ```
-    https://github.com/Dev-Joao-Medeiros/email
+    https://github.com/Dev-Joao-Medeiros/email-service.git
     ```
 
 2. Entre na pasta
